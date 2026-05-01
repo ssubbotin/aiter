@@ -9,15 +9,11 @@ dpkg -l | grep rocm || echo "No ROCm packages found."
 echo
 echo "==== Install dependencies and aiter ===="
 git config --global --add safe.directory /workspace
-pip install --upgrade pandas zmq einops numpy==1.26.2
+pip install -r .github/requirements/triton-test.txt
 pip uninstall -y aiter || true
-pip install --upgrade "pybind11>=3.0.1"
-pip install --upgrade "ninja>=1.11.1"
-pip install tabulate
 pip install -e .
-./.github/scripts/install_triton.sh
 
-# Read BUILD_TRITON env var, default to 1. If 1, install Triton; if 0, skip installation.
+# BUILD_TRITON=1 (default): build triton from source, overriding the pinned wheel.
 BUILD_TRITON=${BUILD_TRITON:-1}
 
 if [[ "$BUILD_TRITON" == "1" ]]; then
@@ -41,13 +37,6 @@ if [[ "$BUILD_TRITON" == "1" ]]; then
         MAX_JOBS=64 pip --retries=10 --default-timeout=60 install .
         cd ..
     fi
-    pip install filecheck
-    # NetworkX is a dependency of Triton test selection script
-    # `.github/scripts/select_triton_tests.py`.
-    pip install networkx
-else
-    echo
-    echo "[SKIP] Triton installation skipped because BUILD_TRITON=$BUILD_TRITON"
 fi
 
 echo
