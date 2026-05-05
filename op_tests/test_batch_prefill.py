@@ -3620,8 +3620,7 @@ def test_batch_prefill_aick1171_hard_fault_via_guard_page(total_blocks):
 
     aiter_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-    child_code = _textwrap.dedent(
-        f"""
+    child_code = _textwrap.dedent(f"""
         import sys
         sys.path.insert(0, {aiter_root!r})
         import torch
@@ -3703,8 +3702,7 @@ def test_batch_prefill_aick1171_hard_fault_via_guard_page(total_blocks):
         rtol, atol = get_tolerances(dtype)
         assert_output_matches_reference(out, q_indptr_cpu, o_ref, rtol, atol)
         print('AICK1171_GUARD_PAGE_OK', flush=True)
-    """
-    )
+    """)
 
     result = _aick1171_run_in_subprocess(child_code)
 
